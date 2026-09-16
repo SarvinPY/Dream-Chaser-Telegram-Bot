@@ -44,6 +44,7 @@ apihelper.ENABLE_MIDDLEWARE = True
 #     bot.reply_to(message, "file recived!")
 
 
+# we can write up code, like the below codes:
 #==========================================================================
 # @bot.message_handler(content_types=['document'])
 # def say_result(message):
@@ -54,8 +55,7 @@ apihelper.ENABLE_MIDDLEWARE = True
 
     
 
-
-
+#==========================================================================
 # @bot.message_handler(commands=['poll'])
 # def create_poll(message):
 #     bot.send_poll(
@@ -73,6 +73,8 @@ apihelper.ENABLE_MIDDLEWARE = True
 #         f"Thanks for your vote {user_name}!"
 #     )
 
+
+#==========================================================================
 bot = telebot.TeleBot(API_TOKEN)
 
 @bot.middleware_handler(update_types=['message'])
