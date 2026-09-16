@@ -4,6 +4,9 @@ from telebot import apihelper
 API_TOKEN = "8574676351:AAG_Z1w8W-_QOpJU0ehH8E5BAr6k2I-NdP8"
 bot = telebot.TeleBot(API_TOKEN)
 apihelper.ENABLE_MIDDLEWARE = True
+
+#==========================================================================
+
 # @bot.message_handler(commands=['help', 'start'])
 # def send_welcome(message):
 #     bot.send_message(message.chat.id, """\
@@ -12,7 +15,7 @@ apihelper.ENABLE_MIDDLEWARE = True
 # """)
 
 
-
+#==========================================================================
 # @bot.message_handler(content_types=['document', 'audio'])
 # def handle_docs_audio(message):
 # 	if message.content_type == "document":
@@ -21,6 +24,8 @@ apihelper.ENABLE_MIDDLEWARE = True
 # 	elif message.content_type == "audio":
 # 		bot.reply_to(message, "file recived!")
 
+
+#==========================================================================
 # def check_hello(message):
 #     return message.text == "Hello"
 
@@ -29,6 +34,7 @@ apihelper.ENABLE_MIDDLEWARE = True
 #     bot.reply_to(message, f"Hello @{message.from_user.username}")
 	
 
+#==========================================================================
 # def check_type(message):
 #     return message.document.mime_type == 'text/plain'
 
@@ -36,8 +42,9 @@ apihelper.ENABLE_MIDDLEWARE = True
 # @bot.message_handler(func= check_type, content_types=['document'])
 # def say_result(message):
 #     bot.reply_to(message, "file recived!")
-#==========================================================================
 
+
+#==========================================================================
 # @bot.message_handler(content_types=['document'])
 # def say_result(message):
 #     if message.document.mime_type == "text/plain":
