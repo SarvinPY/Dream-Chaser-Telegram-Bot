@@ -47,7 +47,7 @@ def send_about(message):
     button1 = InlineKeyboardButton('Main Channel', url='https://t.me/+Ao7539SF26szM2Zk')
     button2 = InlineKeyboardButton('Playlist Channel', url='https://t.me/weirdness_universal')
     button3 = InlineKeyboardButton('GitHub', url='https://github.com/SarvinPY')
-    button4 = InlineKeyboardButton('Linkdin', url='https://linkedin.com/in/sarvin-hosseini-b5b002396')
+    button4 = InlineKeyboardButton('Linkedin', url='https://linkedin.com/in/sarvin-hosseini-b5b002396')
     markup.add(button1, button2)
     markup.add(button3)
     markup.add(button4)
