@@ -48,7 +48,19 @@ def send_about(message):
     button2 = InlineKeyboardButton('Playlist Channel', url='https://t.me/weirdness_universal')
     button3 = InlineKeyboardButton('GitHub', url='https://github.com/SarvinPY')
     button4 = InlineKeyboardButton('Linkedin', url='https://linkedin.com/in/sarvin-hosseini-b5b002396')
+    button5 = InlineKeyboardButton('Next', callback_data = "page2")
     markup.add(button1, button2)
     markup.add(button3)
     markup.add(button4)
+    markup.add(button5)
     bot.send_message(message.chat.id, 'test', reply_markup=markup)
+
+@bot.callback_query_handler(func= lambda call: True)
+def reply_call(call):
+    markup = InlineKeyboardMarkup()
+    button1 = InlineKeyboardButton('button1', url='https://t.me/+Ao7539SF26szM2Zk')    
+    button2 = InlineKeyboardButton('button2', url='https://t.me/+Ao7539SF26szM2Zk') 
+    markup.add(button1)
+    markup.add(button2)
+    if call.data == "page2":
+        bot.edit_message_text(chat_id = call.message.chat.id, message_id = call.message.id, text = "test1:", reply_markup = markup)
