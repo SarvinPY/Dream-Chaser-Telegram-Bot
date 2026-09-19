@@ -55,6 +55,7 @@ def send_about(message):
     markup.add(button5)
     bot.send_message(message.chat.id, 'test', reply_markup=markup)
 
+#About(next page)
 @bot.callback_query_handler(func= lambda call: True)
 def reply_call(call):
     markup = InlineKeyboardMarkup()
@@ -64,3 +65,13 @@ def reply_call(call):
     markup.add(button2)
     if call.data == "page2":
         bot.edit_message_text(chat_id = call.message.chat.id, message_id = call.message.id, text = "test1:", reply_markup = markup)
+
+# Sending a song
+def check_Send_Song(message):
+    return message.text == 'A random song? OK!'
+
+@bot.message_handler(func=check_Send_Song)
+def send_song(message):
+    song_file = open("./Songs/Silence_X_Noir.mp3", "rb")
+    bot.send_audio(message.chat.id, song_file)
+    bot.send_chat_action(message.chat.id, action = 'upload_audio')
