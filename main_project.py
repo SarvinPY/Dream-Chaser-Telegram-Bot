@@ -5,12 +5,12 @@ API_TOKEN = "<token_string>"
 bot = telebot.TeleBot(API_TOKEN)
 
 
-#option button
+#options button
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 
 @bot.message_handler(commands=['start'])
 def send_options(message):
-    markup = ReplyKeyboardMarkup(resize_keyboard=True, input_field_placeholder= "choose an option...")
+    markup = ReplyKeyboardMarkup(resize_keyboard=True,one_time_keyboard=True, input_field_placeholder= "choose an option...")
     markup.add(KeyboardButton('Send me a song!'), KeyboardButton('A random song? OK'))
     markup.add(KeyboardButton('About'))
     markup.add(KeyboardButton('Next Page ➡️'))
@@ -34,44 +34,63 @@ def check_previous_page(message):
 def previous_page_options(message):
     send_options(message)
 
-#About
+#About(1. page) - Button
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
 def check_about(message):
     return message.text == 'About'
 
-@bot.message_handler(func=check_about)
-def send_about(message):
+def about_P1_buttons():
     markup = InlineKeyboardMarkup()
     button1 = InlineKeyboardButton('Main Channel', url='https://t.me/+Ao7539SF26szM2Zk')
     button2 = InlineKeyboardButton('Playlist Channel', url='https://t.me/weirdness_universal')
-    button3 = InlineKeyboardButton('GitHub', url='https://github.com/SarvinPY')
-    button4 = InlineKeyboardButton('Linkedin', url='https://linkedin.com/in/sarvin-hosseini-b5b002396')
-    button5 = InlineKeyboardButton('Next', callback_data = "page2")
+    button3 = InlineKeyboardButton('Spotify Playlist', url='https://open.spotify.com/playlist/1AjOUSzlKh4T44XWcAQMCJ?si=_8IkIAV7TCeQacg51JwKmQ&utm_source=copy-link')
+    button4 = InlineKeyboardButton('Next', callback_data = "page2")
     markup.add(button1, button2)
     markup.add(button3)
     markup.add(button4)
-    markup.add(button5)
-    bot.send_message(message.chat.id, 'test', reply_markup=markup)
+    return markup
 
-#About(next page)
+@bot.message_handler(func=check_about)
+def send_about_P1(message):
+    bot.send_message(message.chat.id, 'about me:', reply_markup = about_P1_buttons())
+
+
+#About(2. page) - Button
 @bot.callback_query_handler(func= lambda call: True)
-def reply_call(call):
+def send_about_P2(call):
     markup = InlineKeyboardMarkup()
-    button1 = InlineKeyboardButton('button1', url='https://t.me/+Ao7539SF26szM2Zk')    
-    button2 = InlineKeyboardButton('button2', url='https://t.me/+Ao7539SF26szM2Zk') 
+    button1 = InlineKeyboardButton('GitHub', url='https://github.com/SarvinPY')
+    button2 = InlineKeyboardButton('Linkdin', url='https://linkedin.com/in/sarvin-hosseini-b5b002396')
+    button3 = InlineKeyboardButton('Back', callback_data = "page1")
     markup.add(button1)
     markup.add(button2)
+    markup.add(button3)
     if call.data == "page2":
-        bot.edit_message_text(chat_id = call.message.chat.id, message_id = call.message.id, text = "test1:", reply_markup = markup)
+        bot.edit_message_text(chat_id = call.message.chat.id, message_id = call.message.id, text = "About my skills:", reply_markup = markup)
+    elif call.data == "page1":
+        bot.edit_message_text(chat_id = call.message.chat.id, message_id = call.message.id, text = "about me:", reply_markup = about_P1_buttons())
+    
 
-# Sending a song
+# Send song - Button
+import random
+@bot.message_handler(content_types=['audio'])
+def check_id(message):
+    file_id = message.audio.file_id
+    print(f"'{file_id}'")
+
+Songs = ['CQACAgQAAxkBAAIBNWqvrkI_osfDsy0RIUe90GqEUjQ7AAISIgACWzB5UdsfIJTj5g4MPQQ',
+        'CQACAgQAAxkDAAIBG2qu_pdMXjqIOQUL6rHo-mPdRihcAAKNIQACWzB5Uc6mNdhpLIitPQQ',
+        'CQACAgEAAxkBAAIBPGqvry_jIGdXgzfDiY0fjff8xGjuAAKDIQACdMfyCNSOjMDjo3TsPQQ',
+        'CQACAgEAAxkBAAIBPWqvr4Krn4JmdymdFI-QxmkzPwVlAALCRgACdMfyCDSCs9hWETefPQQ']
+
+
 def check_Send_Song(message):
     return message.text == 'A random song? OK!'
 
 @bot.message_handler(func=check_Send_Song)
 def send_song(message):
-    song_file = open("./Songs/Silence_X_Noir.mp3", "rb")
-    bot.send_audio(message.chat.id, song_file)
-    bot.send_chat_action(message.chat.id, action = 'upload_audio')
+    bot.send_chat_action(message.chat.id, action = 'upload_document')
+    Random_song = random.choice(Songs)
+    bot.send_audio(message.chat.id, Random_song)
