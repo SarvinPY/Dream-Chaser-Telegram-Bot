@@ -37,7 +37,6 @@ def previous_page_options(message):
 #About(1. page) - Button
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-
 def check_about(message):
     return message.text == 'About'
 
@@ -58,8 +57,7 @@ def send_about_P1(message):
 
 
 #About(2. page) - Button
-@bot.callback_query_handler(func= lambda call: True)
-def send_about_P2(call):
+def about_P2_buttons():
     markup = InlineKeyboardMarkup()
     button1 = InlineKeyboardButton('GitHub', url='https://github.com/SarvinPY')
     button2 = InlineKeyboardButton('Linkdin', url='https://linkedin.com/in/sarvin-hosseini-b5b002396')
@@ -67,14 +65,12 @@ def send_about_P2(call):
     markup.add(button1)
     markup.add(button2)
     markup.add(button3)
-    if call.data == "page2":
-        bot.edit_message_text(chat_id = call.message.chat.id, message_id = call.message.id, text = "About my skills:", reply_markup = markup)
-    elif call.data == "page1":
-        bot.edit_message_text(chat_id = call.message.chat.id, message_id = call.message.id, text = "about me:", reply_markup = about_P1_buttons())
-    
+    return markup
 
 # Send song - Button
 import random
+from telebot.types import ReactionTypeEmoji
+
 @bot.message_handler(content_types=['audio'])
 def check_id(message):
     file_id = message.audio.file_id
@@ -89,8 +85,35 @@ Songs = ['CQACAgQAAxkBAAIBNWqvrkI_osfDsy0RIUe90GqEUjQ7AAISIgACWzB5UdsfIJTj5g4MPQ
 def check_Send_Song(message):
     return message.text == 'A random song? OK!'
 
-@bot.message_handler(func=check_Send_Song)
+@bot.message_handler(func = check_Send_Song)
 def send_song(message):
+    bot.set_message_reaction(chat_id=message.chat.id, message_id=message.message_id, reaction=[ReactionTypeEmoji(emoji="❤️")])
     bot.send_chat_action(message.chat.id, action = 'upload_document')
+    markup = InlineKeyboardMarkup()
+    like_button = InlineKeyboardButton('❤️', callback_data = "like")
+    dislike_button = InlineKeyboardButton('👎🏻', callback_data = "dislike")
+    markup.add(like_button, dislike_button)
     Random_song = random.choice(Songs)
-    bot.send_audio(message.chat.id, Random_song)
+    bot.send_audio(message.chat.id, Random_song, reply_markup = markup)
+
+#Song reaction
+def song_reaction(call_data):
+    markup = InlineKeyboardMarkup()
+    like_button = InlineKeyboardButton('❤️', callback_data = "like")
+    dislike_button = InlineKeyboardButton('👎🏻', callback_data = "dislike")
+
+    if call_data == 'like':
+        markup.add(like_button)
+    elif call_data == 'dislike':
+        markup.add(dislike_button)
+
+#Handling call Backes
+@bot.callback_query_handler(func= lambda call: True)
+def check_call_back(call):
+    if call.data == "page1":
+        bot.edit_message_text(chat_id = call.message.chat.id, message_id = call.message.id, text = "about me:", reply_markup = about_P1_buttons())
+    elif call.data == "page2":
+        bot.edit_message_text(chat_id = call.message.chat.id, message_id = call.message.id, text = "About my skills:", reply_markup = about_P2_buttons())
+    elif (call.data == "like") or (call.data == "dislike"):
+        bot.edit_message_reply_markup(chat_id = call.message.chat.id, message_id = call.message.id, reply_markup = song_reaction(call.data))
+        bot.answer_callback_query(call.id, "Thanks for your opinion!", show_alert = True)
